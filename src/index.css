@@ -1,0 +1,30 @@
+@import "tailwindcss";
+body{
+  text-align: center;
+  padding: 20px;
+}
+
+nav{
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+button{
+  margin: 4px;
+  padding: 6px 10px;
+}
+
+input{
+  margin: 6px 4px;
+  padding: 6px 8px;
+}
+
+ul{
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+}
+
+li{
+  margin: 12px 0;
+}
