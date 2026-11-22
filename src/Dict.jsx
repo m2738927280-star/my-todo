@@ -37,10 +37,18 @@ const Dict=()=>{
         {result &&(
           <div>
             <h3>{result.word} {result.phonetic}</h3>
-            <p>{result.meanings[0].definitions[0].definition}</p>    
+            {result.meanings.map((meaning,i)=>(
+              <div key={i}>
+                <h4>{meaning.partOfSpeech}</h4>
+                <ul>
+                  {meaning.definitions.map((item,j)=>(
+                    <li key={j}>{item.definition}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         )}
-      </div>
-      )
+      </div>);
     };
 export default Dict;
