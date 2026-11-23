@@ -26,7 +26,18 @@ const Dict=()=>{
           setLoading(false);
         }    
     };
-    
+
+    const audioUrl=result?.phonetics?.find(item=>item.audio)?.audio;
+    const playAudio=()=>{
+      if(audioUrl){
+        new Audio(audioUrl).play().catch(()=>{
+          const speak=new SpeeechSynthesisUtterance(result.word);
+          speak.lang='en-US';
+          window.speechSynthesis.speak(speak);
+        });
+      }
+    };
+
     return (
       <div>
         <input value={word} onChange={e=>setWord(e.target.value)}
@@ -36,7 +47,13 @@ const Dict=()=>{
         {error&&<p style={{color:'goldenrod'}}>{error}</p>}
         {result &&(
           <div>
-            <h3>{result.word} {result.phonetic}</h3>
+            <h3>{result.word} {result.phonetic}
+              {audioUrl&&(
+                <button onClick={playAudio} style={{marginLeft:'8px'}}>
+                  🔈 pronounce
+                </button>
+              )}
+            </h3>
             {result.meanings.map((meaning,i)=>(
               <div key={i}>
                 <h4>{meaning.partOfSpeech}</h4>
