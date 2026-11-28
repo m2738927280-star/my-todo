@@ -1,15 +1,27 @@
 import { useState, useEffect } from 'react';
 import Add from './Add';
 import TodoItems from './TodoItems';
+import Auth from './Auth';
 import { supabase } from './supabase';
 
 const TodoList = () => {
+  const [session,setSession]=useState(null);
   const [items, setItems] = useState([]);
   const [keyword, setKeyword] = useState('');
   const [filter, setFilter] = useState('all');
 
+  useEffect(()=>{
+    supabase.auth.getSession().then(({data:{session}})=>{setSession(session);});
+    const {data:{subscription}}=supabase.auth.onAuthStateChange((_event,session)=>{setSession(session);});
+    return ()=>subscription.unsubscribe();
+  },[]);
+
   // 1. 网页刚打开时，去云端把所有待办拉回来
   useEffect(() => {
+    if(!session){
+      setItems([]);
+      return;
+    }
     const fetchTodos = async () => {
       const { data, error } = await supabase
         .from('todos')
@@ -26,13 +38,17 @@ const TodoList = () => {
       }
     };
     fetchTodos();
-  }, []);
+  }, [session]);
 
   // 2. 更新浏览器标签页的未完成数量
   useEffect(() => {
     const undoCount = items.filter(t => t.done === false).length;
     document.title = `${undoCount} thing(s) undo.`;
   }, [items]);
+
+  if(!session){
+    return <Auth/>;
+  }
 
   // 3. 添加一条待办到云端
   const handleAdd = async (thing) => {
@@ -119,6 +135,11 @@ const TodoList = () => {
 
   return (
     <div className='min-h-screen bg-gray-100 p-4 max-w-md mx-auto'>
+      <div className='flex justify-between items-center mb-3 text-sm text-gray-600'>
+        <span>{session.user.email}</span>
+        <button onClick={()=>supabase.auth.signOut()} className='text-red-500 hover:underline'>退出登录</button>
+      </div>
+
       <input
         className='w-full bg-white border border-gray-300 rounded-lg px-3 py-2 mb-3 outline-none focus:border-blue-500'
         value={keyword}
