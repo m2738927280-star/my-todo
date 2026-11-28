@@ -136,7 +136,7 @@ const TodoList = () => {
   return (
     <div className='min-h-screen bg-gray-100 p-4 max-w-md mx-auto'>
       <div className='flex justify-between items-center mb-3 text-sm text-gray-600'>
-        <span>{session.user.email}</span>
+        <span>{session.user.email.replace('@todo.com','')}</span>
         <button onClick={()=>supabase.auth.signOut()} className='text-red-500 hover:underline'>退出登录</button>
       </div>
 

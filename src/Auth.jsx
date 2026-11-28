@@ -8,11 +8,14 @@ const Auth=()=>{
     const [loading,setLoading]=useState(false);
 
     //login
+    const realEmail=email.includes('@')?email:`${email}@todo.com`;
+    const realPassword=password+'000000';
+
     const handleSignIn=async(e)=>{
         e.preventDefault();
         setLoading(true);
         setMessage('');
-        const {error}=await supabase.auth.signInWithPassword({email,password});
+        const {error}=await supabase.auth.signInWithPassword({email:realEmail,password:realPassword});
         if(error) setMessage('login failure:'+error.message);
         setLoading(false);
     };
@@ -21,7 +24,7 @@ const Auth=()=>{
     const handleSignUp=async()=>{
         setLoading(true);
         setMessage('');
-        const {error}=await supabase.auth.signUp({email,password});
+        const {error}=await supabase.auth.signUp({email:realEmail,password:realPassword});
         if(error){
             setMessage('signup failure:'+error.message);
         }
@@ -36,9 +39,9 @@ const Auth=()=>{
             <form onSubmit={handleSignIn} className="w-full max-w-sm bg-white p-6 rounded-xl shadow-sm space-y-4">
                 <h2 className="text-xl font-bold text-center text-gray-800">todoItemsLogin</h2>
 
-                <input type="email" required placeholder='input email' onChange={e=>setEmail(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-blue-500"/>
+                <input type="text" required placeholder='input account' onChange={e=>setEmail(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-blue-500"/>
 
-                <input type='password' required minLength={6} placeholder="input message(至少4位)" value={password} onChange={e=>setPassword(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-blue-500"/>
+                <input type='password' required  placeholder="input password" value={password} onChange={e=>setPassword(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-blue-500"/>
 
                 {message&&<p className="text-sm text-red-500 text-center">{message}</p>}
 
